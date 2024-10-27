@@ -1,16 +1,19 @@
 import { ethers } from "hardhat";
+import { JsonRpcProvider } from "@ethersproject/providers";
 
 async function main() {
-  const BuyMyRoom = await ethers.getContractFactory("BuyMyRoom.sol");
-  const buyMyRoom = await BuyMyRoom.deploy();
-  await buyMyRoom.deployed();
+  // 手动设置 JSON RPC 提供者
+  const provider = new JsonRpcProvider("http://127.0.0.1:8545");
+  const signer = provider.getSigner();
 
-  console.log(`BuyMyRoom deployed to ${buyMyRoom.address}`);
+  const HouseNFT = await ethers.getContractFactory("HouseNFT", signer);
+  const houseNFT = await HouseNFT.deploy();
+  await houseNFT.deployed();
+
+  console.log("HouseNFT deployed to:", houseNFT.address);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
-  console.error(error);
+  console.error("Error during deployment:", error);
   process.exitCode = 1;
 });
